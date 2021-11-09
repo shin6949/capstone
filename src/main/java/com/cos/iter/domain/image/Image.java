@@ -9,6 +9,7 @@ import lombok.*;
 @Entity(name = "image")
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(callSuper = false, exclude = {"post"})
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class Image {
 
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name="post_id", foreignKey = @ForeignKey(name="FK_IMAGE_POST_ID"))
+	@ToString.Exclude
 	private Post post;
 
 	@Column(columnDefinition = "smallint default 0")

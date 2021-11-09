@@ -62,7 +62,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties({"post"})
-    @ToString.Exclude // Jackson한테 내리는 명령
     private List<Image> images;
 
     @JsonIgnoreProperties({"post"})
