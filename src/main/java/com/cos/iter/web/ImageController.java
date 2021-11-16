@@ -28,24 +28,10 @@ public class ImageController {
 	private String blobStorageUrl;
 
 	@GetMapping("/image/uploadForm")
-	public String imageUploadForm(@RequestParam(name = "location", required = false) String location,
-								  @RequestParam(name = "lot", required = false) float lot,
-								  @RequestParam(name = "lat", required = false) float lat,
-								  Model model) {
-		log.info(logging.getClassName() + " / " + logging.getMethodName());
-		log.info("lot: " + lot + " / lat: " + lat);
-
-		if(location == null) {
-			log.info("Redirecting to location find page");
-			return "redirect:/location/find";
-		}
-
-		model.addAttribute("location", location);
-		model.addAttribute("longitude", lot);
-		model.addAttribute("latitude", lat);
-
+	public String imageUploadForm(Model model) {
 		model.addAttribute("storageUrl", blobStorageUrl);
-		return "image/image-upload";
+
+		return "image/new-image-upload";
 	}
 	
 	@PostMapping("/image/upload")

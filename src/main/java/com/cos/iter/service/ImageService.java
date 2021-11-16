@@ -31,20 +31,30 @@ public class ImageService {
 	public void photoUploadToCloud(ImageReqDto imageReqDto, int postId) {
 		final Post postEntity = postRepository.findById(postId).orElseThrow(null);
 
-		short seq = 0;
-		for(MultipartFile file : imageReqDto.getFile()) {
+		for(short i = 0; i < imageReqDto.getFile().size(); i++) {
 			try {
-				final String imageFilename = azureService.uploadToCloudAndReturnFileName(file, "photo");
-				final Image image = imageReqDto.toImageEntity(imageFilename, postEntity, seq);
+				final String imageFilename = azureService.uploadToCloudAndReturnFileName(imageReqDto.getFile().get(i), "photo");
+
+				Image image = Image.builder()
+						.post(postEntity)
+						.latitude(imageReqDto.getLatitude().get(i))
+						.longitude(imageReqDto.getLongitude().get(i))
+						.locationName(imageReqDto.getLocationName().get(i))
+						.roadAddress(imageReqDto.getRoadAddress().get(i))
+						.kakaoMapUrl(imageReqDto.getKakaoMapUrl().get(i))
+						.sequence(i)
+						.url(imageFilename)
+						.build();
+
 				imageRepository.save(image);
-				seq += 1;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
 		// Tag 저장 -> Tag는 Post에 종속되어 있으므로 한 번만 등록하면 됨.
-		List<String> tagNames = tagParser.tagParse(imageReqDto.getTags());
+		List<String> tagNames = tagParser.tagParse(imageReqDto.getContent());
+		log.info("tag: " + tagNames);
 		for (String name : tagNames) {
 			Tag tag = Tag.builder()
 					.post(postEntity)

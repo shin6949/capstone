@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -91,7 +92,7 @@ public class PostController {
         return "image/explore";
     }
 
-    @GetMapping("/post/detail/{postId}")
+    @GetMapping(path = "/post/detail/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public String detailView(@LoginUserAnnotation LoginUser loginUser, @PathVariable(name="postId") int postId,
                              HttpServletResponse response, Model model) throws IOException {
         log.info(logging.getClassName() + " / " + logging.getMethodName());
@@ -111,6 +112,7 @@ public class PostController {
 
         model.addAttribute("posts", post);
         model.addAttribute("storageUrl", blobStorageUrl);
+        model.addAttribute("mapData", post.toJavaScriptData());
 
         postService.increaseViewCount(post);
         return "post/detail";

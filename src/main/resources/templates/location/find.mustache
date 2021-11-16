@@ -20,12 +20,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+<div style="text-align: center">
 <form>
     <input type="text" id="placename" placeholder="검색어를 입력하세요." value="목포 시청">
     <input width="100px" type='button' onclick="searchLocation()" value="검색">
 </form>
-
-<div id="map" style="width:500px; height:350px;"></div>
+</div>
+<div id="map" style="width:700px; height:550px;margin:0 auto;"></div>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1b29e5f1a06b5ed964627df8f7e9c4b9&libraries=services"></script>
 <script>
@@ -114,6 +115,8 @@
         console.log($(".modal-body #location").value);
     }
 </script>
+<div style="text-align: center">
 {{>layout/footer}}
+</div>
 </body>
 </html>

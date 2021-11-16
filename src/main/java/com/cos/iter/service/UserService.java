@@ -18,8 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.function.Supplier;
 

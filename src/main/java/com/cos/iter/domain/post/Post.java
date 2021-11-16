@@ -9,6 +9,7 @@ import com.cos.iter.web.dto.UserProfilePostRespDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.*;
+import lombok.extern.log4j.Log4j2;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -37,6 +38,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Log4j2
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,5 +114,30 @@ public class Post {
 
     public Image getFirstImage() {
         return getImages().get(0);
+    }
+
+    public String toJavaScriptData() {
+        StringBuilder result = new StringBuilder("[");
+
+        for(int i = 0; i < images.size(); i++) {
+            final Image image = images.get(i);
+
+            result.append("{\"place_name\": \"").append(image.getLocationName()).append("\",");
+            result.append("\"place_url\": \"").append(image.getKakaoMapUrl()).append("\",");
+            if(image.getRoadAddress() != null) {
+                result.append("\"road_address_name\": \"").append(image.getRoadAddress()).append("\",");
+            }
+            result.append("\"x\": \"").append(image.getLongitude()).append("\",");
+            result.append("\"y\": \"").append(image.getLatitude()).append("\"}");
+
+            if(i != (images.size() -1 )) {
+                result.append(",");
+            }
+        }
+
+        result.append("];");
+
+        log.info("Converted Data: " + result);
+        return result.toString();
     }
 }
