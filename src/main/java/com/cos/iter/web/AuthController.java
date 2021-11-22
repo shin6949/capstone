@@ -71,7 +71,9 @@ public class AuthController {
 				return null;
 		}
 
-		return "redirect:/auth/loginForm";
+		out.println(Script.href("회원가입에 성공하였습니다.", "/auth/loginForm"));
+		out.flush();
+		return null;
 	}
 }
 

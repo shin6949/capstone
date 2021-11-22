@@ -3,16 +3,16 @@
 
 <main id="profile">
 		<div class="profile__photo-grid">
-				{{#posts}}
-				<!-- 유저가 업로드한 Feed 사진 -->
-					<div class="profile__photo">
-						<a href="/post/detail/{{id}}">
-                            {{#images}}
-                                <img src="{{url}}" />
-                            {{/images}}
-						</a>
-					</div>
-					{{/posts}}
+            {{#posts}}
+            <!-- 유저가 업로드한 Feed 사진 -->
+                <div class="profile__photo">
+                    <a href="/post/detail/{{id}}">
+                        {{#firstImage}}
+                            <img src="{{url}}" />
+                        {{/firstImage}}
+                    </a>
+                </div>
+            {{/posts}}
 		</div>
 
     <div class="w3-center">

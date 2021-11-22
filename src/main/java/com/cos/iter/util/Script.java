@@ -13,4 +13,11 @@ public class Script {
 				"history.back();" +
 				"</script>";
 	}
+
+	public static String href(String msg, String href) {
+		return "<script>" +
+				"alert('" + msg + "');" +
+				"location.href=\"" + href + "\";" +
+				"</script>";
+	}
 }

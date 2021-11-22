@@ -25,7 +25,7 @@
 </div>
 
 <div class="container">
-    <form id="post-upload-form" action="/image/upload" method="post" enctype="multipart/form-data">
+    <form id="post-upload-form" action="/image/upload" method="post" enctype="multipart/form-data" onsubmit="return false;">
         <div class="container" id="photo-container">
             <!-- 1번 사진 업로드 폼 -->
             <div class="container border border-5" id="image-1" style="margin: 20px;">
@@ -53,7 +53,8 @@
                         <div class="form-group">
                             <table>
                                 <tr>
-                                    <td><input class="form-control" type="text" id="placename-1" placeholder="찾을 위치를 입력하세요."></td>
+                                    <td><input class="form-control" type="text" id="placename-1"
+                                               onKeypress="javascript:if(event.keyCode==13) {searchLocation(1)}"  placeholder="찾을 위치를 입력하세요."></td>
                                     <td><button class="btn btn-primary" type='button' onclick="searchLocation(1)">검색</button></td>
                                 </tr>
                             </table>
@@ -146,14 +147,13 @@
                 '</div>\n' +
                 '<div class="col-sm">\n' +
                 '<div class="form-group">\n' +
-                '<form>\n' +
                 '<table>\n' +
                 '<tr>\n' +
-                ' <td><input class="form-control" type="text" id="placename-' + num + '" placeholder="찾을 위치를 입력하세요." value=""></td>\n' +
+                ' <td><input class="form-control" type="text" id="placename-' + num + '" ' +
+                'onKeypress=\"javascript:if(event.keyCode==13) {searchLocation(' + num + ')}\" placeholder="찾을 위치를 입력하세요." value=""></td>\n' +
                 ' <td><input class="btn btn-primary" type=\'button\' onclick="searchLocation(' + num + ')" value="검색"></td>\n' +
                 '</tr>\n' +
                 '</table>\n' +
-                '</form>\n' +
                 '</div>\n' +
                 '</div>\n' +
                 '</div>\n' +

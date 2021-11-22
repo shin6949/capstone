@@ -18,11 +18,12 @@
 		<div class="login__column">
 			<div class="login__box">
 				<img src="{{storageUrl}}/static/loginLogo.png" />
-				<form action="/auth/join" method="post" class="login__form">
+				<form action="/auth/join" method="post" class="login__form" onsubmit="return check_information(this)">
 					<input type="email" name="email" placeholder="Email" required> 
 					<input type="text" name="name" placeholder="Name" required> 
 					<input type="text" name="username" placeholder="Username" required> 
-					<input type="password" name="password" placeholder="Password" required>
+					<input id="pw" type="password" name="password" placeholder="Password" required>
+                    <input id="pwre" type="password" name="passwordRe" placeholder="Re-Type Password" required>
 					<input type="submit" value="Sign up">
 				</form>
 <!--				<span class="login__divider"> or </span> -->
@@ -36,4 +37,18 @@
 		</div>
 	</main>
 
+    <script>
+        function check_information() {
+            var pw = document.getElementById( 'pw' ).value;
+            var pw_re = document.getElementById( 'pwre' ).value;
+
+            if(pw !== pw_re) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return false;
+            }
+
+            return true;
+        }
+
+    </script>
 	{{>layout/footer}}

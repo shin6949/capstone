@@ -2,4 +2,4 @@
 rm -rf ./target
 mvn clean
 mvn package
-docker build --tag shin6949/iter:1.0 .
+docker build --tag shin6949/iter:latest .
