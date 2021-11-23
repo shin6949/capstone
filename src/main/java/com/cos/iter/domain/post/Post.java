@@ -44,6 +44,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @CreationTimestamp

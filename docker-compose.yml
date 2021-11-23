@@ -1,0 +1,48 @@
+version: '3.1'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./nginx/conf.d:/etc/nginx/conf.d"
+      - "./certbot/conf:/etc/letsencrypt"
+      - "./certbot/www:/var/www/certbot"
+    command: "/bin/sh -c 'while :; do sleep 24h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    depends_on:
+      - certbot
+    restart: always
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - "./certbot/conf:/etc/letsencrypt"
+      - "./certbot/www:/var/www/certbot"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 168h & wait $${!}; done;'"
+    environment:
+      - TZ=Asia/Seoul
+    restart: always
+
+  iter:
+    image: ghcr.io/shin6949/iter:latest
+    container_name: iter
+    expose:
+      - 8080
+    environment:
+      - DB_URL=jdbc:mysql://{DB_URL}:{DB_PORT}/{DB_NAME}
+      - DB_USER={DB_USER}
+      - DB_PASSWORD={DB_PASSWORD}
+      - COS_SECRET={COS_SECRET}
+      - FILE_PATH=/home/root/upload
+      - AZURE_CONNECT_STRING={AZURE_CONNECT_STRING}
+      - AZURE_BLOB_URL={AZURE_BLOB_URL}
+      - TZ=Asia/Seoul
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./upload:/home/root/upload
+    restart: always
+    depends_on:
+      - nginx
