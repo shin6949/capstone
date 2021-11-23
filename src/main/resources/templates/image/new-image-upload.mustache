@@ -25,7 +25,7 @@
 </div>
 
 <div class="container">
-    <form id="post-upload-form" action="/image/upload" method="post" enctype="multipart/form-data" onsubmit="return false;">
+    <form id="post-upload-form" action="/image/upload" method="post" enctype="multipart/form-data" onKeypress="javascript:if(event.keyCode==13) {return false;}">
         <div class="container" id="photo-container">
             <!-- 1번 사진 업로드 폼 -->
             <div class="container border border-5" id="image-1" style="margin: 20px;">
