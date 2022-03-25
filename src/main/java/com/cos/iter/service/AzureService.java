@@ -23,6 +23,7 @@ public class AzureService {
     @Value("${file.path}")
     private String uploadFolder;
 
+    // TODO: FileUploadService에서 filename 받아서 Upload 하도록 변경해야함.
     public String uploadToCloudAndReturnFileName(MultipartFile file, String ContainerName) throws IOException {
         final UUID uuid = UUID.randomUUID();
         final String imageFilename = uuid + "_" + file.getOriginalFilename();
