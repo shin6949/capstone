@@ -2,6 +2,7 @@ package com.cos.iter.web;
 
 import com.cos.iter.service.PostService;
 import com.cos.iter.util.Logging;
+import com.cos.iter.util.Script;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import com.cos.iter.service.ImageService;
 import com.cos.iter.web.dto.ImageReqDto;
 
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @Controller
@@ -43,7 +46,13 @@ public class ImageController {
 		int postId = postService.saveAndReturnId(imageReqDto, loginUser.getId());
 		log.info("Inserted Post Id: " + postId);
 
-		imageService.photoUploadToCloud(imageReqDto, postId);
+		try {
+			imageService.photoUploadToCloud(imageReqDto, postId);
+		} catch (IOException ioException) {
+			ioException.printStackTrace();
+			return Script.alert("업로드 과정에서 문제가 발생하였습니다.");
+		}
+
 		return "redirect:/user/" + loginUser.getId();
 	}
 }
