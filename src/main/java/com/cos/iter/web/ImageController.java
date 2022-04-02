@@ -47,9 +47,9 @@ public class ImageController {
 		log.info("Inserted Post Id: " + postId);
 
 		try {
-			imageService.photoUploadToCloud(imageReqDto, postId);
-		} catch (IOException ioException) {
-			ioException.printStackTrace();
+			imageService.contentUpload(imageReqDto, postId);
+		} catch (Exception e) {
+			e.printStackTrace();
 			return Script.alert("업로드 과정에서 문제가 발생하였습니다.");
 		}
 

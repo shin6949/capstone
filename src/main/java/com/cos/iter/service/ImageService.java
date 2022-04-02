@@ -6,6 +6,7 @@ import com.cos.iter.domain.post.Post;
 import com.cos.iter.domain.post.PostRepository;
 import com.cos.iter.domain.tag.Tag;
 import com.cos.iter.domain.tag.TagRepository;
+import com.cos.iter.enums.FileType;
 import com.cos.iter.util.TagParser;
 import com.cos.iter.web.dto.ImageReqDto;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class ImageService {
 	private final ImageRepository imageRepository;
 	private final TagRepository tagRepository;
 	private final AzureService azureService;
+	private final OnPremSaveService onPremSaveService;
 	private final PostRepository postRepository;
 	private final TagParser tagParser;
 
@@ -39,13 +41,14 @@ public class ImageService {
 	private String tempPath;
 
 	@Transactional(rollbackFor = {Exception.class})
-	public boolean photoUploadToCloud(ImageReqDto imageReqDto, int postId) throws IOException{
+	public void contentUpload(ImageReqDto imageReqDto, int postId) throws Exception {
 		final Post postEntity = postRepository.findById(postId).orElseThrow(null);
 
+		// 파일이 여러 개일 수 있기 때문에 for로 진행
 		for(short i = 0; i < imageReqDto.getFile().size(); i++) {
 			final String imageFilename = writeFileAtTempPath(imageReqDto.getFile().get(i));
 
-			// Image Meta Data Upload
+			// Image 메타 데이터 Insert
 			final Image image = Image.builder()
 					.post(postEntity)
 					.latitude(imageReqDto.getLatitude().get(i))
@@ -58,6 +61,12 @@ public class ImageService {
 					.build();
 
 			imageRepository.save(image);
+
+			// 각각 지정한 방식에 따라 파일 저장
+			uploadFileEachMethod(imageFilename, FileType.USER_CONTENT);
+
+			// 임시 저장 파일 삭제
+			deleteFileAtTempPath(imageFilename);
 		}
 
 		// Tag 저장 -> Tag는 Post에 종속되어 있으므로 한 번만 등록하면 됨.
@@ -70,11 +79,29 @@ public class ImageService {
 					.build();
 			tagRepository.save(tag);
 		}
-
-		return true;
 	}
 
-	// 임시 파일 작성
+	@Transactional(rollbackFor = {Exception.class})
+	public String profileUpload(MultipartFile file) throws IOException {
+		final String imageFilename = writeFileAtTempPath(file);
+
+		// 각각 지정한 방식에 따라 파일 저장
+		uploadFileEachMethod(imageFilename, FileType.USER_PROFILE);
+
+		// 임시 저장 파일 삭제
+		deleteFileAtTempPath(imageFilename);
+
+		return imageFilename;
+	}
+
+	private void uploadFileEachMethod(String imageFilename, FileType fileType) throws IOException {
+		if(fileUploadMethod.equals("ONPREMISE")) {
+			onPremSaveService.saveFile(imageFilename, fileType);
+		} else if(fileUploadMethod.equals("AZURE")) {
+			azureService.uploadFile(imageFilename, fileType.getAzureContainerName());
+		}
+	}
+
 	private String writeFileAtTempPath(MultipartFile file) throws IOException {
 		final UUID uuid = UUID.randomUUID();
 		final String generatedFileName = uuid + "_" + file.getOriginalFilename();
@@ -86,8 +113,7 @@ public class ImageService {
 	}
 
 	// 임시 파일 삭제
-	private void deleteFileAtTempPath(String fileName) throws IOException {
-		// 결과에 무관하게 폐기 (실패 시에는 실패했다는 메시지가 Return 되므로)
+	private void deleteFileAtTempPath(String fileName) {
 		try {
 			Files.delete(Path.of(tempPath + fileName));
 		} catch (IOException e) {

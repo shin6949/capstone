@@ -18,10 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -35,33 +33,31 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final FollowRepository followRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
-	private final AzureService azureService;
+	private final ImageService imageService;
 
 	@Transactional
 	public void uploadProfile(LoginUser loginUser, MultipartFile file) {
 		String imageFilename = "";
 
 		try {
-			imageFilename = azureService.uploadToCloudAndReturnFileName(file, "profile");
+			imageFilename = imageService.profileUpload(file);
 		} catch (IOException ioException) {
 			ioException.printStackTrace();
 		}
 
-		User userEntity = userRepository.findById(loginUser.getId()).orElseThrow(new Supplier<MyUserIdNotFoundException>() {
+		final User userEntity = userRepository.findById(loginUser.getId()).orElseThrow(new Supplier<MyUserIdNotFoundException>() {
 			@Override
 			public MyUserIdNotFoundException get() {
 				return new MyUserIdNotFoundException();
 			}
 		});
-		
-		// 더티체킹
+
 		userEntity.setProfileImage(imageFilename);
 	}
 	
 	@Transactional
 	public void modifyUser(User user) {
-		// 더티 체킹
-		User userEntity = userRepository.findById(user.getId()).orElseThrow(new Supplier<MyUserIdNotFoundException>() {
+		final User userEntity = userRepository.findById(user.getId()).orElseThrow(new Supplier<MyUserIdNotFoundException>() {
 			@Override
 			public MyUserIdNotFoundException get() {
 				return new MyUserIdNotFoundException();

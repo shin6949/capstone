@@ -18,19 +18,13 @@ public class AzureService {
     @Value("${file.temp-upload-path}")
     private String tempPath;
 
-    @Value("${azure.container-name.user-contents}")
-    private String toUploadContainerName;
-
-    // TODO: FileUploadService에서 filename 받아서 Upload 하도록 변경해야함.
-    public boolean uploadToCloudAndReturnFileName(String imageFileName) throws IOException {
+    public void uploadFile(String imageFileName, String containerName) {
         final BlobContainerClient container = new BlobContainerClientBuilder()
                 .connectionString(connectString)
-                .containerName(toUploadContainerName)
+                .containerName(containerName)
                 .buildClient();
 
         final BlobClient blob = container.getBlobClient(imageFileName);
         blob.uploadFromFile(tempPath + imageFileName);
-
-        return true;
     }
 }
