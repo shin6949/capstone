@@ -50,7 +50,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 	
 	// 이미지 경로 찾기를 위해 추가 시작
-	@Value("${file.path}")
+	// TODO: 업로드 방식에 따른 분기 필요
+	@Value("${onpremise.store-path}")
 	private String uploadFolder;
 	
 	@Override

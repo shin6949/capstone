@@ -7,12 +7,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 @Service
 @Log4j2
 public class AzureService {
-    @Value("${azure.connect-string}")
+    @Value("${azure.connect-string?:}")
     private String connectString;
 
     @Value("${file.temp-upload-path}")

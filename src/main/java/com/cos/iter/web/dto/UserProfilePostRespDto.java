@@ -1,5 +1,6 @@
 package com.cos.iter.web.dto;
 
+import com.cos.iter.enums.FileType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,6 @@ public class UserProfilePostRespDto {
 	private int commentCount;
 
 	public String getImageUrl() {
-		final String blogStorageUrl = System.getenv("AZURE_BLOB_URL");
-
-		return blogStorageUrl + "/photo/" + imageUrl;
+		return FileType.USER_PROFILE.getUrl(imageUrl);
 	}
 }

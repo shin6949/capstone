@@ -12,9 +12,19 @@ public enum FileType {
     private final String onPremiseLocation;
 
     FileType(String azureContainerName, String onPremiseLocation) {
-        final String onPremiseRootPath = System.getenv("onpremise.store-path");
-
         this.azureContainerName = azureContainerName;
-        this.onPremiseLocation = onPremiseLocation + onPremiseRootPath + "/";
+        this.onPremiseLocation = onPremiseLocation + "/";
+    }
+
+    public String getUrl(String filename) {
+        final String fileUploadMethod = System.getenv("file.upload.method");
+
+        if(fileUploadMethod.equals("ONPREMISE")) {
+            return System.getenv("base.url") + "/" + getOnPremiseLocation() + "/" + filename;
+        } else if(fileUploadMethod.equals("AZURE")) {
+            return System.getenv("azure.blob.url") + "/" + getAzureContainerName() + "/" + filename;
+        }
+
+        return null;
     }
 }
